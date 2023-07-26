@@ -23,7 +23,7 @@ stage('Query Release Version') {
 steps {
 script{
 	env.RELEASE_VER = sh(script: 'curl -u "${SECRETUSER}:${SECRETPASS}" -sX GET "https://api.github.com/repos/${GITHUB_RELEASE_URL_SUFFIX}" \
-	| jq -r ".tag_name"', returnStdout: true).trim() 
+	| jq -r ".tag_name"', returnStdout: true).trim()
 	}
 	}
 	}
@@ -49,9 +49,9 @@ steps {
 	sh ('docker buildx build \
 	--no-cache \
 	--pull \
-	-t ${CONTAINER_REPOSITORY}:$BUILD_NUMBER \
-	-t ${CONTAINER_REPOSITORY}:${RELEASE_VER} \ 
-	--build-arg RELEASE=${RELEASE_VER} \
+	-t $CONTAINER_REPOSITORY:$BUILD_NUMBER \
+	-t $CONTAINER_REPOSITORY:$RELEASE_VER \
+	--build-arg RELEASE=$RELEASE_VER \
 	.')
 	}
 	}
@@ -63,16 +63,15 @@ steps {
 	$CONTAINER_REPOSITORY:$BUILD_NUMBER')
 	}
 	}
-	}
+
+}
 
 post {
 success {
 archiveArtifacts artifacts: 'build/*.tar.bz2'
 sshagent (credentials: ['bd8b00ff-decf-4a75-9e56-1ea2c7d0d708']) {
-	sh('git tag -f $BUILD_NUMBER')
-	sh('git tag -f $RELEASE_VER')
-	sh('git push -f git@github.com:$GITHUB_REPOSITORY.git $BUILD_NUMBER')
-	sh('git push -f git@github.com:$GITHUB_REPOSITORY.git $RELEASE_VER')	
+    sh('git tag -f $RELEASE_VER')
+    sh('git push -f git@github.com:$GITHUB_REPOSITORY.git $RELEASE_VER')
 	}
 	}
 	}
