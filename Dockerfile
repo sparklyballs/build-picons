@@ -36,10 +36,13 @@ RUN \
 	set -ex \
 	&& mkdir -p \
 		/build \
-	&& cp /src/picons/build-output/binaries-snp-full/*hardlink*.tar.bz2 /build/picons.tar.bz2 \
+		/src/output \
+	&& tar xf /src/picons/build-output/binaries-snp-full/*hardlink*.tar.bz2 -C \
+	/src/output --strip-components=1 \
+	&& tar -cjf /build/picons.tar.bz2 -C \
+	/src/output . \
 	&& chown -R 1000:1000 /build
 
 # copy files out to /mnt
 CMD ["cp", "-avr", "/build", "/mnt/"]
-
 
