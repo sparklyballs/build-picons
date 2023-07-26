@@ -49,8 +49,8 @@ steps {
 	sh ('docker buildx build \
 	--no-cache \
 	--pull \
-	-t $CONTAINER_REPOSITORY:$BUILD_NUMBER \
-	-t $CONTAINER_REPOSITORY:${RELEASE_VER} \ 
+	-t ${CONTAINER_REPOSITORY}:$BUILD_NUMBER \
+	-t ${CONTAINER_REPOSITORY}:${RELEASE_VER} \ 
 	--build-arg RELEASE=${RELEASE_VER} \
 	.')
 	}
