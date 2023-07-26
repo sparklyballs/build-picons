@@ -1,6 +1,13 @@
 FROM debian:bookworm-slim
 
+# build args
+ARG RELEASE
+
+# add local files
 COPY backgrounds.conf /src/
+
+
+# install packages
 RUN \
 	apt-get update \
 	&& apt-get install \
@@ -9,6 +16,7 @@ RUN \
 		binutils \
 		bzip2 \
 		ca-certificates \
+		curl \
 		git \
 		gzip \
 		imagemagick \
@@ -22,16 +30,27 @@ RUN \
 		/var/lib/apt/lists/* \
 		/var/tmp/*
 
+# set shell
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+# set workdir
 WORKDIR /src/picons
 
+# fetch source
 RUN \
-	git clone https://github.com/picons/picons /src/picons \
+	if [ -z ${RELEASE+x} ]; then \
+	RELEASE=$(curl -u "${SECRETUSER}:${SECRETPASS}" -sX GET "https://api.github.com/repos/picons/picons/releases/latest" \
+	| jq -r ".tag_name");	fi \
+	&& set -ex \
+	&& git clone -b $RELEASE https://github.com/picons/picons /src/picons \
 	&& cp /src/backgrounds.conf /src/picons/build-input/
 
 
+# build picons
 RUN \
 	./2-build-picons.sh snp-full
 
+# archive picons
 RUN \
 	set -ex \
 	&& mkdir -p \
