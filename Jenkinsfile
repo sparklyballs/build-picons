@@ -56,7 +56,7 @@ steps {
 
 post {
 success {
-archiveArtifacts artifacts: 'build/*.tar.gz'
+archiveArtifacts artifacts: 'build/*.tar.bz2'
 sshagent (credentials: ['bd8b00ff-decf-4a75-9e56-1ea2c7d0d708']) {
     sh('git tag -f $BUILD_NUMBER')
     sh('git push -f git@github.com:$GITHUB_REPOSITORY.git $BUILD_NUMBER')
