@@ -42,7 +42,7 @@ RUN \
 	RELEASE=$(curl -u "${SECRETUSER}:${SECRETPASS}" -sX GET "https://api.github.com/repos/picons/picons/releases/latest" \
 	| jq -r ".tag_name");	fi \
 	&& set -ex \
-	&& git clone -b $RELEASE https://github.com/picons/picons /src/picons \
+	&& git clone -b "$RELEASE" https://github.com/picons/picons /src/picons \
 	&& cp /src/backgrounds.conf /src/picons/build-input/
 
 
