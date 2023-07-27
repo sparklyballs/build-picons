@@ -58,7 +58,7 @@ RUN \
 		/src/output \
 	&& tar xf /src/picons/build-output/binaries-snp-full/*hardlink*.tar.bz2 -C \
 	/src/output --strip-components=1 \
-	&& for file in /src/missing_picons/* ; do cp -nv $file /src/output/ ; done \
+	&& for file in /src/missing_picons/* ; do cp -nv "$file" /src/output/ ; done \
 	&& tar -cjf /build/picons.tar.bz2 -C \
 	/src/output . \
 	&& chown -R 1000:1000 /build
